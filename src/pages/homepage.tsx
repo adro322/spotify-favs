@@ -1,4 +1,4 @@
-import React from "react";
+import "react";
 
 const clientId = "28f681099dd4476ab876de8f335a4645";
 const redirectUri = "https://spotify-favs-iota.vercel.app/callback";

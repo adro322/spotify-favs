@@ -8,7 +8,7 @@ function App() {
     const code = params.get("code");
 
     if (code) {
-      const redirect_uri = import.meta.env.REDIRECT_URI;
+      const redirect_uri = import.meta.env.VITE_REDIRECT_URI;
       console.log("Client sending code and redirect_uri:", redirect_uri);
 
       fetch("/api/callback", {
@@ -27,8 +27,8 @@ return(
   <div className="p-10 text-white bg-gray-900 min-h-screen">
       <a
         href={`https://accounts.spotify.com/authorize?client_id=${
-          import.meta.env.SPOTIFY_CLIENT_ID
-        }&response_type=code&redirect_uri=${encodeURIComponent(import.meta.env.REDIRECT_URI)}&scope=user-top-read`}
+          import.meta.env.VITE_SPOTIFY_CLIENT_ID
+        }&response_type=code&redirect_uri=${encodeURIComponent(import.meta.env.VITE_REDIRECT_URI)}&scope=user-top-read`}
         className="px-6 py-3 bg-green-500 rounded-lg hover:bg-green-600"
       >
         Conectar con Spotify

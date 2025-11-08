@@ -25,15 +25,13 @@ return(
       <a
         href={`https://accounts.spotify.com/authorize?client_id=${
           import.meta.env.VITE_SPOTIFY_CLIENT_ID
-        }&response_type=code&redirect_uri=https://spotify-favs-iota.vercel.app&scope=user-top-read`}
+        }&response_type=code&redirect_uri=${import.meta.env.VITE_REDIRECT_URI}&scope=user-top-read`}
         className="px-6 py-3 bg-green-500 rounded-lg hover:bg-green-600"
       >
         Conectar con Spotify
       </a>
     </div>
   );
-
-
 }
 
 export default App

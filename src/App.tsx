@@ -1,4 +1,4 @@
-import {  useEffect } from 'react'
+import { useEffect } from 'react'
 import './App.css'
 
 function App() {
@@ -8,15 +8,18 @@ function App() {
     const code = params.get("code");
 
     if (code) {
+      const redirect_uri = import.meta.env.VITE_REDIRECT_URI;
+      console.log("Client sending code and redirect_uri:", redirect_uri);
+
       fetch("/api/callback", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ code }),
+        body: JSON.stringify({ code, redirect_uri }), // enviar para debug
       })
         .then((res) => res.json())
         .then((data) => {
           console.log("Token:", data.access_token);
-          // Aquí puedes guardar el token en localStorage o state
+          console.log("API debug response:", data);
         });
     }
   }, []);
@@ -25,7 +28,7 @@ return(
       <a
         href={`https://accounts.spotify.com/authorize?client_id=${
           import.meta.env.VITE_SPOTIFY_CLIENT_ID
-        }&response_type=code&redirect_uri=${import.meta.env.VITE_REDIRECT_URI}&scope=user-top-read`}
+        }&response_type=code&redirect_uri=${encodeURIComponent(import.meta.env.VITE_REDIRECT_URI)}&scope=user-top-read`}
         className="px-6 py-3 bg-green-500 rounded-lg hover:bg-green-600"
       >
         Conectar con Spotify

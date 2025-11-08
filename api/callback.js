@@ -3,7 +3,8 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  const { code, redirect_uri: clientRedirect } = await req.json();
+  // Fix: Usar req.body directamente si es una función serverless en Vercel
+  const { code } = req.body;  // cambiar req.json() por req.body
 
   const client_id = process.env.SPOTIFY_CLIENT_ID;
   const client_secret = process.env.SPOTIFY_CLIENT_SECRET;
@@ -13,9 +14,7 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: "Missing server environment variables" });
   }
 
-  // log para depuración
-  console.log("Server REDIRECT_URI env:", redirect_uri);
-  if (clientRedirect) console.log("Client sent redirect_uri:", clientRedirect);
+  console.log("Server processing code with redirect_uri:", redirect_uri);
 
   const creds = Buffer.from(`${client_id}:${client_secret}`).toString("base64");
 
@@ -29,18 +28,12 @@ export default async function handler(req, res) {
       body: new URLSearchParams({
         grant_type: "authorization_code",
         code,
-        redirect_uri, // usar el valor del servidor (debe ser idéntico al del cliente)
+        redirect_uri,
       }),
     });
 
     const data = await response.json();
-
-    if (!response.ok) {
-      // devolver la respuesta de Spotify para depuración
-      return res.status(response.status).json({ spotify_error: data, sent_redirect_uri: redirect_uri });
-    }
-
-    return res.status(200).json(data);
+    return res.status(response.ok ? 200 : 400).json(data);
   } catch (err) {
     return res.status(500).json({ error: "Error fetching token", details: String(err) });
   }

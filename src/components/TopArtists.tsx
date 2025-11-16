@@ -1,4 +1,4 @@
-import  { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 
 interface Artist {
@@ -7,69 +7,42 @@ interface Artist {
   images: { url: string }[];
 }
 
-export default function TopArtists({ accessToken }: { accessToken: string }) {
+export default function TopArtists({
+  accessToken,
+  timeRange,
+}: {
+  accessToken: string;
+  timeRange: "short_term" | "medium_term" | "long_term";
+}) {
   const [artists, setArtists] = useState<Artist[]>([]);
-  const [range, setRange] = useState<"short_term" | "medium_term" | "long_term">(
-    "short_term"
-  );
-useEffect(() => {
+
+  useEffect(() => {
     if (!accessToken) return;
 
     axios
       .get(
-        `https://api.spotify.com/v1/me/top/artists?limit=10&time_range=${range}`,
+        `https://api.spotify.com/v1/me/top/artists?limit=10&time_range=${timeRange}`,
         {
           headers: { Authorization: `Bearer ${accessToken}` },
         }
       )
       .then((res) => setArtists(res.data.items))
-      .catch((err) => console.error(err));
-  }, [accessToken, range]);
+      .catch((err) => console.error("Error top artists:", err));
+  }, [accessToken, timeRange]);
 
   return (
-    <div>
-      <h2 className="text-2xl font-bold mb-4">Top Artistas</h2>
+    <div className="mb-12">
+      <h2 className="text-2xl font-semibold mb-4">Top Artistas</h2>
 
-      {/* BOTONES DE TIEMPO */}
-      <div className="flex gap-4 mb-6">
-        <button
-          onClick={() => setRange("short_term")}
-          className={`px-4 py-2 rounded ${
-            range === "short_term" ? "bg-green-600" : "bg-gray-700"
-          }`}
-        >
-          Últimas 4 semanas
-        </button>
-
-        <button
-          onClick={() => setRange("medium_term")}
-          className={`px-4 py-2 rounded ${
-            range === "medium_term" ? "bg-green-600" : "bg-gray-700"
-          }`}
-        >
-          Últimos 6 meses
-        </button>
-
-        <button
-          onClick={() => setRange("long_term")}
-          className={`px-4 py-2 rounded ${
-            range === "long_term" ? "bg-green-600" : "bg-gray-700"
-          }`}
-        >
-          Último año
-        </button>
-      </div>
-
-      {/* GRID DE ARTISTAS */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+      <div className="flex flex-wrap gap-6">
         {artists.map((artist) => (
-          <div key={artist.id} className="bg-gray-800 p-4 rounded-lg text-center">
+          <div key={artist.id} className="text-center w-40">
             <img
               src={artist.images[0]?.url}
               alt={artist.name}
-              className="w-full h-40 object-cover rounded-lg"
+              className="rounded-lg shadow-lg"
             />
-            <p className="mt-3 font-medium">{artist.name}</p>
+            <p className="mt-2 font-medium">{artist.name}</p>
           </div>
         ))}
       </div>

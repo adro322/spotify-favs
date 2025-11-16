@@ -5,7 +5,6 @@ interface Artist {
   id: string;
   name: string;
   images: { url: string }[];
-  topTracksCount: number; // veces escuchadas aproximadas
 }
 
 export default function TopArtists({ accessToken, timeRange }: { accessToken: string; timeRange: string }) {
@@ -15,31 +14,11 @@ export default function TopArtists({ accessToken, timeRange }: { accessToken: st
   useEffect(() => {
     if (!accessToken) return;
 
-    // Primero traemos tus top artists (hasta 50)
     axios
       .get(`https://api.spotify.com/v1/me/top/artists?limit=50&time_range=${timeRange}`, {
         headers: { Authorization: `Bearer ${accessToken}` },
       })
-      .then(async (res) => {
-        const artistsData = res.data.items;
-
-        // Para cada artista, traemos sus top tracks para contar aproximado de escuchas
-        const artistsWithCounts: Artist[] = await Promise.all(
-          artistsData.map(async (a: any) => {
-            const topTracks = await axios.get(`https://api.spotify.com/v1/artists/${a.id}/top-tracks?market=from_token`, {
-              headers: { Authorization: `Bearer ${accessToken}` },
-            });
-            return {
-              id: a.id,
-              name: a.name,
-              images: a.images,
-              topTracksCount: topTracks.data.tracks.length, // simple contador aproximado
-            };
-          })
-        );
-
-        setArtists(artistsWithCounts);
-      })
+      .then((res) => setArtists(res.data.items))
       .catch((err) => console.error(err));
   }, [accessToken, timeRange]);
 
@@ -52,17 +31,18 @@ export default function TopArtists({ accessToken, timeRange }: { accessToken: st
       <div className="flex flex-col gap-4">
         {visibleArtists.map((a, i) => (
           <div key={a.id} className="flex items-center gap-4 p-3 bg-gray-800/40 rounded-xl hover:bg-gray-800 transition">
-            <span className="w-8 font-bold text-gray-300">{i + 1}</span>
+            {/* ranking */}
+            <span className="w-8 font-bold text-gray-300">{i + 1}.</span>
+
+            {/* imagen */}
             <img src={a.images[0]?.url} alt={a.name} className="w-16 h-16 rounded-full object-cover" />
-            <div className="flex-1 flex flex-col">
-              <span className="font-semibold">{a.name}</span>
-              <span className="text-gray-400 text-sm">Escuchado aprox. {a.topTracksCount} veces</span>
-            </div>
+
+            {/* icono Spotify */}
             <a
               href={`https://open.spotify.com/artist/${a.id}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-green-500 hover:text-green-400 transition"
+              className="text-green-500 hover:text-green-400 transition ml-auto"
               title="Abrir en Spotify"
             >
               <i className="fa-brands fa-spotify text-lg"></i>

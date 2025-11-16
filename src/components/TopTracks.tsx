@@ -1,6 +1,5 @@
 import { useEffect, useState, useRef } from "react";
 import axios from "axios";
-import { motion, AnimatePresence } from "framer-motion";
 
 interface Track {
   id: string;
@@ -12,8 +11,8 @@ interface Track {
 
 export default function TopTracks({ accessToken, timeRange }: { accessToken: string; timeRange: string }) {
   const [tracks, setTracks] = useState<Track[]>([]);
-  const [showAll, setShowAll] = useState(false);
-  const audioPlayer = useRef(new Audio());
+  const [expanded, setExpanded] = useState(false);
+  const audio = useRef(new Audio());
 
   useEffect(() => {
     if (!accessToken) return;
@@ -26,69 +25,70 @@ export default function TopTracks({ accessToken, timeRange }: { accessToken: str
       .catch((err) => console.error(err));
   }, [accessToken, timeRange]);
 
-  const togglePlay = (url: string | null) => {
-    if (!url) {
-      alert("¡Esta canción no tiene preview disponible!");
+  const togglePlay = (preview: string | null) => {
+    if (!preview) {
+      alert("Esta canción no tiene preview 😢");
       return;
     }
 
-    if (audioPlayer.current.src !== url) {
-      audioPlayer.current.src = url;
-      audioPlayer.current.play();
+    if (audio.current.src !== preview) {
+      audio.current.src = preview;
+      audio.current.play();
     } else {
-      audioPlayer.current.paused ? audioPlayer.current.play() : audioPlayer.current.pause();
+      audio.current.paused ? audio.current.play() : audio.current.pause();
     }
   };
 
-  const visibleTracks = showAll ? tracks : tracks.slice(0, 10);
+  const visible = expanded ? tracks : tracks.slice(0, 10);
 
   return (
     <div className="mt-10">
-      <h2 className="text-2xl font-bold mb-4">🎵 Top Tracks</h2>
+      <h2 className="text-2xl font-bold mb-6">🎧 Tus Top Tracks</h2>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">
-        <AnimatePresence>
-          {visibleTracks.map((track) => (
-            <motion.div
-              key={track.id}
-              initial={{ opacity: 0, scale: 0.7 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0 }}
-              className="relative group p-2 rounded-xl bg-gray-800/40 shadow-md hover:bg-gray-800 transition"
-            >
-              {/* Imagen + Play */}
-              <div className="relative">
-                <img
-                  src={track.album.images[0]?.url}
-                  alt={track.name}
-                  className="rounded-lg w-full"
-                />
+      <div className="flex flex-col gap-4">
+        {visible.map((t, i) => (
+          <div
+            key={t.id}
+            className="flex items-center gap-4 p-3 bg-gray-800/40 rounded-xl hover:bg-gray-800 transition relative"
+          >
+            {/* número */}
+            <p className="w-8 text-xl font-bold text-gray-300">{i + 1}.</p>
 
-                {/* Hover Play Button */}
-                <button
-                  onClick={() => togglePlay(track.preview_url)}
-                  className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition bg-black/50 rounded-lg"
-                >
-                  ▶️
-                </button>
-              </div>
+            {/* imagen */}
+            <div className="relative group">
+              <img
+                src={t.album.images[0]?.url}
+                className="w-16 h-16 rounded-lg object-cover"
+              />
 
-              <p className="mt-2 font-semibold truncate">{track.name}</p>
-              <p className="text-sm text-gray-400 truncate">
-                {track.artists.map(a => a.name).join(", ")}
+              {/* PLAY ON HOVER */}
+              <button
+                onClick={() => togglePlay(t.preview_url)}
+                className="absolute inset-0 flex items-center justify-center
+                           opacity-0 group-hover:opacity-100 transition bg-black/50 rounded-lg"
+              >
+                ▶️
+              </button>
+            </div>
+
+            {/* info */}
+            <div className="flex flex-col">
+              <p className="font-bold text-lg">{t.name}</p>
+              <p className="text-gray-400 text-sm">
+                {t.artists.map((a) => a.name).join(", ")}
               </p>
-            </motion.div>
-          ))}
-        </AnimatePresence>
+            </div>
+          </div>
+        ))}
       </div>
 
-      {/* Botón Mostrar más / menos */}
+      {/* BOTÓN */}
       <div className="text-center mt-6">
         <button
-          onClick={() => setShowAll(!showAll)}
+          onClick={() => setExpanded(!expanded)}
           className="px-6 py-2 bg-green-600 rounded-xl hover:bg-green-700 transition"
         >
-          {showAll ? "Mostrar menos" : "Mostrar más"}
+          {expanded ? "Mostrar menos" : "Mostrar más"}
         </button>
       </div>
     </div>

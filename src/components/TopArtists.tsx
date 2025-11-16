@@ -26,7 +26,7 @@ export default function TopArtists({ accessToken, timeRange }: { accessToken: st
 
   // Ranking global estimado basado en "popularity"
   const popularityToRank = (popularity: number) => {
-    return Math.round((100 - popularity) * 10) + 1;
+    return Math.round((10 - popularity) * 10) + 1;
   };
 
   const visibleArtists = showAll ? artists : artists.slice(0, 10);

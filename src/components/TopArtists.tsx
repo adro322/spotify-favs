@@ -1,12 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-interface Track {
-  id: string;
-  name: string;
-  artists: { id: string; name: string }[];
-}
-
 interface Artist {
   id: string;
   name: string;

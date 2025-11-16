@@ -22,7 +22,6 @@ function App() {
         .then((data) => {
           console.log("Access token recibido:", data.access_token);
           setAccessToken(data.access_token);
-          // Limpiar el code de la URL para que no se muestre
           window.history.replaceState({}, document.title, "/");
         })
         .catch((err) => console.error("Error al obtener token:", err));
@@ -36,17 +35,47 @@ function App() {
   )}&scope=user-top-read`;
 
   return (
-    <div className="p-10 text-white bg-gray-900 min-h-screen">
+    <div className="min-h-screen bg-gray-950 text-white">
+
+      {/* HEADER */}
+      <header className="w-full py-5 px-10 bg-black/40 backdrop-blur-md border-b border-white/10 flex justify-between items-center">
+        <h1 className="text-2xl font-bold tracking-wide">Spotify Favs</h1>
+        <button className="px-4 py-2 bg-red-500 rounded-lg hover:bg-red-600 transition">Login</button>
+
+        {accessToken && (
+          <button
+            onClick={() => {
+              setAccessToken(null);
+              window.location.href = "/";
+            }}
+            className="px-4 py-2 bg-red-500 rounded-lg hover:bg-red-600 transition"
+          >
+            Cerrar sesión
+          </button>
+        )}
+      </header>
+
+      {/* HOME (si NO hay sesión) */}
       {!accessToken ? (
-        <a
-          href={loginUrl}
-          className="px-6 py-3 bg-green-500 rounded-lg hover:bg-green-600"
-        >
-          Conectar con Spotify
-        </a>
+        <div className="flex flex-col items-center justify-center h-[80vh] text-center px-6">
+          <h2 className="text-4xl font-bold mb-6">
+            Bienvenido a <span className="text-green-400">Spotify Favs</span>
+          </h2>
+          <p className="text-lg text-gray-300 mb-8 max-w-xl">
+            Conecta tu cuenta de Spotify y descubre tus artistas y canciones más escuchadas.
+          </p>
+
+          <a
+            href={loginUrl}
+            className="px-8 py-3 bg-green-500 text-lg rounded-xl hover:bg-green-600 transition shadow-lg"
+          >
+            Iniciar sesión con Spotify
+          </a>
+        </div>
       ) : (
-        <div>
-          <h1 className="text-3xl mb-6">Tus Favoritos de Spotify</h1>
+        /* DASHBOARD (si YA hay sesión) */
+        <div className="p-10">
+          <h2 className="text-3xl mb-6 font-semibold">Tu Dashboard</h2>
           <TopArtists accessToken={accessToken} />
           <TopTracks accessToken={accessToken} />
         </div>

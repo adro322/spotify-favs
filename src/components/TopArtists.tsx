@@ -1,14 +1,17 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSpotify } from "@fortawesome/free-brands-svg-icons";
 
+interface Track {
+  id: string;
+  name: string;
+  artists: { id: string; name: string }[];
+}
 
 interface Artist {
   id: string;
   name: string;
-  popularity: number;
   images: { url: string }[];
+  topTracksCount: number; // veces escuchadas aproximadas
 }
 
 export default function TopArtists({ accessToken, timeRange }: { accessToken: string; timeRange: string }) {
@@ -18,40 +21,49 @@ export default function TopArtists({ accessToken, timeRange }: { accessToken: st
   useEffect(() => {
     if (!accessToken) return;
 
+    // Primero traemos tus top artists (hasta 50)
     axios
       .get(`https://api.spotify.com/v1/me/top/artists?limit=50&time_range=${timeRange}`, {
         headers: { Authorization: `Bearer ${accessToken}` },
       })
-      .then((res) => setArtists(res.data.items))
+      .then(async (res) => {
+        const artistsData = res.data.items;
+
+        // Para cada artista, traemos sus top tracks para contar aproximado de escuchas
+        const artistsWithCounts: Artist[] = await Promise.all(
+          artistsData.map(async (a: any) => {
+            const topTracks = await axios.get(`https://api.spotify.com/v1/artists/${a.id}/top-tracks?market=from_token`, {
+              headers: { Authorization: `Bearer ${accessToken}` },
+            });
+            return {
+              id: a.id,
+              name: a.name,
+              images: a.images,
+              topTracksCount: topTracks.data.tracks.length, // simple contador aproximado
+            };
+          })
+        );
+
+        setArtists(artistsWithCounts);
+      })
       .catch((err) => console.error(err));
   }, [accessToken, timeRange]);
-
-  // Ranking simulado tipo top global más realista
-  const popularityToRank = (popularity: number) => {
-    return Math.max(1, Math.round((1000 - popularity * 10) / 1));
-  };
 
   const visibleArtists = showAll ? artists : artists.slice(0, 10);
 
   return (
     <div className="mt-10">
       <h2 className="text-2xl font-bold mb-4">🌟 Top Artists</h2>
+
       <div className="flex flex-col gap-4">
         {visibleArtists.map((a, i) => (
           <div key={a.id} className="flex items-center gap-4 p-3 bg-gray-800/40 rounded-xl hover:bg-gray-800 transition">
-            {/* ranking */}
             <span className="w-8 font-bold text-gray-300">{i + 1}</span>
-
-            {/* imagen */}
             <img src={a.images[0]?.url} alt={a.name} className="w-16 h-16 rounded-full object-cover" />
-
-            {/* info */}
             <div className="flex-1 flex flex-col">
               <span className="font-semibold">{a.name}</span>
-              <span className="text-gray-400 text-sm">#{popularityToRank(a.popularity)} global</span>
+              <span className="text-gray-400 text-sm">Escuchado aprox. {a.topTracksCount} veces</span>
             </div>
-
-            {/* abrir Spotify */}
             <a
               href={`https://open.spotify.com/artist/${a.id}`}
               target="_blank"
@@ -59,7 +71,7 @@ export default function TopArtists({ accessToken, timeRange }: { accessToken: st
               className="text-green-500 hover:text-green-400 transition"
               title="Abrir en Spotify"
             >
-              <FontAwesomeIcon icon={faSpotify} size="lg" />
+              <i className="fa-brands fa-spotify text-lg"></i>
             </a>
           </div>
         ))}

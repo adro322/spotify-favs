@@ -44,7 +44,9 @@ function App() {
             />
 
             {/* DASHBOARD */}
+            <div className="mb-12">
             <GenreChart accessToken={accessToken} timeRange={timeRange} />
+            </div>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
               <TopArtists accessToken={accessToken} timeRange={timeRange} />
               <TopTracks accessToken={accessToken} timeRange={timeRange} />

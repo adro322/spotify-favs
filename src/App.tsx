@@ -16,7 +16,7 @@ function App() {
 
       {/* HEADER */}
       <header className="w-full py-5 px-10 bg-black/40 backdrop-blur-md border-b border-white/10 flex justify-between items-center">
-        <h1 className="text-2xl font-bold tracking-wide">Spotify Favs</h1>
+        <h1 className="text-2xl font-bold tracking-wide">SpotiStats</h1>
 
         {accessToken && (
           <button
@@ -44,9 +44,12 @@ function App() {
             />
 
             {/* DASHBOARD */}
-            <TopArtists accessToken={accessToken} timeRange={timeRange} />
-            <TopTracks accessToken={accessToken} timeRange={timeRange} />
             <GenreChart accessToken={accessToken} timeRange={timeRange} />
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+              <TopArtists accessToken={accessToken} timeRange={timeRange} />
+              <TopTracks accessToken={accessToken} timeRange={timeRange} />
+            </div>
+            
           </div>
         </>
       )}

@@ -38,11 +38,11 @@ function App() {
         <>
           <main className="max-w-7xl mx-auto px-6 py-8">
             
-            <div className="flex justify-center mb-8">
+            <div className="flex justify-left">
               <TimeRangeSelector timeRange={timeRange} setTimeRange={setTimeRange} />
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <section className="md:col-span-2 h-[400px] pb-8">
+              <section className="md:col-span-2 h-[400px] pb-4">
                 <GenreChart accessToken={accessToken} timeRange={timeRange} />
               </section>
               <section className="w-full">

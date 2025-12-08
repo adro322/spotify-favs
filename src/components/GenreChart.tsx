@@ -71,13 +71,13 @@ export default function GenreChart({
   }, [accessToken, timeRange]);
 
   return (
-    <div className="bg-white/5 p-6 rounded-2xl shadow-lg w-full h-full flex flex-col">
+    <div className="bg-gray-800/40 p-6 rounded-2xl shadow-lg w-full h-full flex flex-col">
       <h2 className="text-2xl font-bold mb-4 text-left text-white">
         Géneros Favoritos
       </h2>
 
       {genres.length > 0 ? (
-        <div className="h-[400px] w-full flex justify-center items-center">
+        <div className="h-[500px] w-full flex justify-center items-center">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
               <Pie

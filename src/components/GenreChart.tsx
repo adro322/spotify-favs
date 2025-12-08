@@ -73,14 +73,13 @@ export default function GenreChart({
   }, [accessToken, timeRange]);
 
   return (
-    <div className="bg-white/5 p-6 rounded-xl shadow-lg w-full max-w-md mx-auto">
+    <div className="bg-white/5 p-6 rounded-xl shadow-lg w-1200 mx-auto">
       <h2 className="text-2xl font-bold mb-4 text-center text-white">
         Géneros Favoritos
       </h2>
 
       {genres.length > 0 ? (
-        // Contenedor responsivo para que se adapte al tamaño
-        <div className="h-[300px] w-full flex justify-center items-center">
+        <div className="h-[400px] w-full flex justify-center items-center">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
               <Pie
@@ -98,7 +97,7 @@ export default function GenreChart({
                   <Cell
                     key={`cell-${index}`}
                     fill={COLORS[index % COLORS.length]}
-                    stroke="none" // Quita el borde blanco feo
+                    stroke="none" 
                   />
                 ))}
               </Pie>

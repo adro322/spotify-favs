@@ -61,7 +61,7 @@ export default function GenreChart({
             percentage: ((item.count / total) * 100).toFixed(1),
           }))
           .sort((a, b) => b.count - a.count)
-          .slice(0, 8);
+          .slice(0, 6); 
 
         setGenres(sorted);
 
@@ -72,7 +72,7 @@ export default function GenreChart({
 
   return (
     <div className="bg-white/5 p-6 rounded-xl shadow-lg w-full max-w-[1200px] mx-auto">
-      <h2 className="text-2xl font-bold mb-4 text-center text-white">
+      <h2 className="text-2xl font-bold mb-4 text-left text-white">
         Géneros Favoritos
       </h2>
 

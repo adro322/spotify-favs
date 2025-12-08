@@ -2,11 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import {PieChart, Pie, Cell, ResponsiveContainer, Tooltip,} from 'recharts';
 
-  interface GenreData {
-    name: string;
-    count: number;
-    percent: number; 
-  }
+
 
     
   const COLORS = [
@@ -29,7 +25,7 @@ export default function GenreChart({
   accessToken: string;
   timeRange: "short_term" | "medium_term" | "long_term";
 }) {
-  const [genres, setGenres] = useState<GenreData[]>([]);
+  const [genres, setGenres] = useState<{ name: string; count: number }[]>([]);
 
 
 
@@ -106,7 +102,7 @@ export default function GenreChart({
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
               <Pie
-                data={genres as any} // Aseguramos el tipo correcto
+                data={genres}
                 cx="50%"
                 cy="50%"
                 labelLine={true} // Línea conectora

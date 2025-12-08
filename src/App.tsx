@@ -45,13 +45,13 @@ function App() {
             />
 
             {/* DASHBOARD */}
-            <section className="w-full lg:h-[500px]">
+            <div className="w-full lg:h-[500px]">
             <GenreChart accessToken={accessToken} timeRange={timeRange} />
-            </section>
-            <section className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            </div>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
               <TopArtists accessToken={accessToken} timeRange={timeRange} />
               <TopTracks accessToken={accessToken} timeRange={timeRange} />
-            </section>
+            </div>
             
           </div>
           </main>

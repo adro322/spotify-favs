@@ -71,7 +71,7 @@ export default function GenreChart({
   }, [accessToken, timeRange]);
 
   return (
-    <div className="bg-white/5 p-6 rounded-xl shadow-lg w-full max-w-[1200px] mx-auto">
+    <div className="bg-white/5 p-6 rounded-2xl shadow-lg w-full h-full flex flex-col">
       <h2 className="text-2xl font-bold mb-4 text-left text-white">
         Géneros Favoritos
       </h2>

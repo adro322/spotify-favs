@@ -36,29 +36,36 @@ function App() {
         <Login onToken={(t) => setAccessToken(t)} />
       ) : (
         <>
-        <main className="max-w-6xl mx-auto px-6 py-8">
-          {/* TIME RANGE BUTTONS */}
-          <div className="flex justify-center mb-8">
-            <TimeRangeSelector
-              timeRange={timeRange}
-              setTimeRange={setTimeRange}
-            />
+        <main className="max-w-7xl mx-auto px-6 py-8">
+        
+        {/* 1. BOTONES ARRIBA (Centrados) */}
+        <div className="flex justify-center mb-8">
+          <TimeRangeSelector timeRange={timeRange} setTimeRange={setTimeRange} />
+        </div>
 
-            {/* DASHBOARD */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <div className="lg:col-span-2 h-[400px]">
-              <GenreChart accessToken={accessToken} timeRange={timeRange} />
-              </div>
-              <section className="w-full">
-                <TopArtists accessToken={accessToken} timeRange={timeRange} />
-              </section>
-              <section className="w-full">
-                <TopTracks accessToken={accessToken} timeRange={timeRange} />
-              </section>
-            </div>
-            
-          </div>
-        </main>
+        {/* 2. LA GRILLA MAESTRA (2 columnas) */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          
+          {/* EL GRÁFICO (Ocupa las 2 columnas) 
+              md:col-span-2 -> Esto hace que se estire a lo ancho
+          */}
+          <section className="md:col-span-2 h-[400px]">
+            <GenreChart accessToken={accessToken} timeRange={timeRange} />
+          </section>
+
+          {/* TOP ARTISTS (Columna Izquierda) */}
+          <section className="w-full">
+             <TopArtists accessToken={accessToken} timeRange={timeRange} />
+          </section>
+
+          {/* TOP TRACKS (Columna Derecha) */}
+          <section className="w-full">
+             <TopTracks accessToken={accessToken} timeRange={timeRange} />
+          </section>
+
+        </div>
+      </main>
+      // --- FIN DEL DISEÑO ---
         </>
       )}
     </div>

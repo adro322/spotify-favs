@@ -80,7 +80,7 @@ export default function GenreChart({
                 nameKey="name"
                 paddingAngle={5} // Espacio entre rebanadas
               >
-                {genres.map((entry, index) => (
+                {genres.map((_, index) => (
                   <Cell
                     key={`cell-${index}`}
                     fill={COLORS[index % COLORS.length]}

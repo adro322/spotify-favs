@@ -22,8 +22,6 @@ export default function GenreChart({
   // Paleta de colores para el gráfico (puedes cambiarlos a tu gusto)
   const COLORS = [
     "#1DB954", // Spotify Green
-    "#191414", // Black
-    "#535353", // Grey
     "#B3B3B3", // Light Grey
     "#FF0055", // Accent Red (contrast)
     "#0077FF", // Accent Blue
@@ -63,7 +61,7 @@ export default function GenreChart({
             percentage: ((item.count / total) * 100).toFixed(1),
           }))
           .sort((a, b) => b.count - a.count)
-          .slice(0, 5);
+          .slice(0, 8);
 
         setGenres(sorted);
 

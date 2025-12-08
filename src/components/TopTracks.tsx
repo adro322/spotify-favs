@@ -29,7 +29,7 @@ export default function TopTracks({ accessToken, timeRange }: { accessToken: str
   const visibleTracks = showAll ? tracks : tracks.slice(0, 10);
 
   return (
-    <div className="mt-10">
+    <div className="mt-6">
       <h2 className="text-2xl font-bold mb-4">🎵 Top Tracks</h2>
       <div className="flex flex-col gap-4">
         {visibleTracks.map((t, i) => (

@@ -77,7 +77,7 @@ export default function GenreChart({
       </h2>
 
       {genres.length > 0 ? (
-        <div className="h-[500px] w-full flex justify-center items-center">
+        <div className="h-[600px] w-full flex justify-center items-center">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
               <Pie

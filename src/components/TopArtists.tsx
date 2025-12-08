@@ -27,7 +27,7 @@ export default function TopArtists({ accessToken, timeRange }: { accessToken: st
   const visibleArtists = showAll ? artists : artists.slice(0, 10);
 
   return (
-    <div className="mt-10">
+    <div className="mt-6">
       <h2 className="text-2xl font-bold mb-4">🌟 Top Artists</h2>
 
       <div className="flex flex-col gap-4">

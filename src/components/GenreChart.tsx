@@ -2,24 +2,14 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
 
-// 1. Interfaz definida afuera
 interface GenreData {
   name: string;
   count: number;
-  percent: number;
 }
 
 const COLORS = [
-  "#1DB954", // Spotify Green
-  "#191414", // Black
-  "#535353", // Grey
-  "#B3B3B3", // Light Grey
-  "#FF0055", // Accent Red
-  "#0077FF", // Accent Blue
-  "#FFAA00", // Accent Orange
-  "#8800CC", // Accent Purple
-  "#00CCCC", // Cyan
-  "#FF5500", // Dark Orange
+  "#1DB954", "#191414", "#535353", "#B3B3B3", "#FF0055",
+  "#0077FF", "#FFAA00", "#8800CC", "#00CCCC", "#FF5500",
 ];
 
 export default function GenreChart({
@@ -34,7 +24,7 @@ export default function GenreChart({
   useEffect(() => {
     if (!accessToken) return;
 
-    // 2. URL CORREGIDA (Esta es la real de Spotify)
+    // URL oficial correcta para obtener tus artistas top
     const ENDPOINT = "https://api.spotify.com/v1/me/top/artists";
 
     axios
@@ -48,55 +38,20 @@ export default function GenreChart({
         });
 
         const counts: Record<string, number> = {};
-        let totalCount = 0;
         allGenres.forEach((g) => {
           counts[g] = (counts[g] || 0) + 1;
-          totalCount++;
         });
 
-        if (totalCount === 0) return;
-
+        // Convertimos y ordenamos (ya no necesitamos calcular el porcentaje manual aquí)
         const sorted = Object.entries(counts)
-          .map(([name, count]) => ({
-            name,
-            count,
-            percent: parseFloat(((count / totalCount) * 100).toFixed(1)),
-          }))
+          .map(([name, count]) => ({ name, count }))
           .sort((a, b) => b.count - a.count)
-          .slice(0, 8);
+          .slice(0, 8); // Top 8
 
         setGenres(sorted);
       })
       .catch((err) => console.error("Error genres:", err));
   }, [accessToken, timeRange]);
-
-  const renderCustomizedLabel = ({
-    cx,
-    cy,
-    midAngle,
-    outerRadius,
-    percent,
-    name,
-  }: any) => {
-    const RADIAN = Math.PI / 180;
-    const radius = outerRadius + 25;
-    const x = cx + radius * Math.cos(-midAngle * RADIAN);
-    const y = cy + radius * Math.sin(-midAngle * RADIAN);
-    const textAnchor = x > cx ? "start" : "end";
-
-    return (
-      <text
-        x={x}
-        y={y}
-        fill="white"
-        textAnchor={textAnchor}
-        dominantBaseline="central"
-        className="text-xs font-medium"
-      >
-        {`${name} ${(percent * 100).toFixed(0)}%`}
-      </text>
-    );
-  };
 
   return (
     <div className="bg-white/5 p-6 rounded-2xl shadow-lg w-full h-full flex flex-col">
@@ -109,17 +64,17 @@ export default function GenreChart({
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
               <Pie
-                // 3. AQUÍ ESTÁ EL TRUCO PARA QUITAR EL ERROR ROJO
-                data={genres as any} 
+                data={genres as any}
                 cx="50%"
                 cy="50%"
-                labelLine={true}
-                label={renderCustomizedLabel}
+                labelLine={false}
                 outerRadius={100}
                 fill="#8884d8"
                 dataKey="count"
-                nameKey="name"
-                paddingAngle={2}
+                // AQUÍ ESTÁ LA CORRECCIÓN CLAVE (: any)
+                label={({ name, percent }: any) => 
+                  `${name} ${(percent * 100).toFixed(0)}%`
+                }
               >
                 {genres.map((_, index) => (
                   <Cell
@@ -130,16 +85,16 @@ export default function GenreChart({
                 ))}
               </Pie>
               <Tooltip
-                formatter={(value: number, name: string, props: any) => [
-                  `${value} artistas (${props.payload.percent}%)`,
-                  name,
-                ]}
                 contentStyle={{
-                  backgroundColor: "#1f2937",
-                  border: "none",
+                  backgroundColor: "#18181b",
+                  border: "1px solid #27272a",
                   borderRadius: "8px",
-                  color: "white",
+                  color: "#fff",
                 }}
+                formatter={(value: number, name: string) => [
+                  `${value} artistas`, 
+                  name
+                ]}
               />
             </PieChart>
           </ResponsiveContainer>

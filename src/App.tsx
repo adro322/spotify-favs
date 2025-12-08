@@ -49,10 +49,12 @@ function App() {
               <div className="lg:col-span-2 h-[400px]">
               <GenreChart accessToken={accessToken} timeRange={timeRange} />
               </div>
-              <div className="w-full">
+              <section className="w-full">
                 <TopArtists accessToken={accessToken} timeRange={timeRange} />
+              </section>
+              <section className="w-full">
                 <TopTracks accessToken={accessToken} timeRange={timeRange} />
-              </div>
+              </section>
             </div>
             
           </div>

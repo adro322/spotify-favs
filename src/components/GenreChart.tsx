@@ -38,7 +38,7 @@ export default function GenreChart({
 
     axios
       .get(
-        `https://api.spotify.com/v1/me/top/artists?limit=20&time_range=$${timeRange}`,
+        `https://api.spotify.com/v1/me/top/artists?limit=20&time_range=${timeRange}`,
         {
           headers: { Authorization: `Bearer ${accessToken}` },
         }

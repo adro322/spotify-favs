@@ -1,16 +1,14 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import {PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend} from 'recharts';
+import {PieChart, Pie, Cell, ResponsiveContainer, Tooltip,} from 'recharts';
 
-export default function GenreChart({
-  accessToken,
-  timeRange,
-}: {
-  accessToken: string;
-  timeRange: "short_term" | "medium_term" | "long_term";
-}) {
-  const [genres, setGenres] = useState<{ name: string; count: number }[]>([]);
-  
+  interface GenreData {
+    name: string;
+    count: number;
+    percent: number; 
+  }
+
+    
   const COLORS = [
     "#1DB954", // Spotify Green
     "#191414", // Black
@@ -23,6 +21,17 @@ export default function GenreChart({
     "#00CCCC", // Cyan
     "#FF5500", // Dark Orange
   ];
+  
+export default function GenreChart({
+  accessToken,
+  timeRange,
+}: {
+  accessToken: string;
+  timeRange: "short_term" | "medium_term" | "long_term";
+}) {
+  const [genres, setGenres] = useState<GenreData[]>([]);
+
+
 
   useEffect(() => {
     if (!accessToken) return;
@@ -41,67 +50,96 @@ export default function GenreChart({
           allGenres.push(...artist.genres);
         });
 
-        // Contar
+        // 1. Contar ocurrencias y calcular el TOTAL
         const counts: Record<string, number> = {};
+        let totalCount = 0;
         allGenres.forEach((g) => {
           counts[g] = (counts[g] || 0) + 1;
+          totalCount++;
         });
 
         const sorted = Object.entries(counts)
-          .map(([name, count]) => ({ name, count }))
+          .map(([name, count]) => ({
+            name,
+            count,
+            percent: parseFloat(((count / totalCount) * 100).toFixed(1)),
+          }))
           .sort((a, b) => b.count - a.count)
-          .slice(0, 6); // Top 10
+          .slice(0, 8); 
 
         setGenres(sorted);
       })
       .catch((err) => console.error("Error genres:", err));
   }, [accessToken, timeRange]);
 
+    const renderCustomizedLabel = ({
+      cx, cy, midAngle,  outerRadius, percent, name
+    }: any) => {
+      const RADIAN = Math.PI / 180;
+      const radius = outerRadius + 25; 
+      const x = cx + radius * Math.cos(-midAngle * RADIAN);
+      const y = cy + radius * Math.sin(-midAngle * RADIAN);
+
+      const textAnchor = x > cx ? 'start' : 'end';
+      return (
+        <text 
+          x={x} 
+          y={y} 
+          fill="white" 
+          textAnchor={textAnchor} 
+          dominantBaseline="central" 
+          className="text-sm font-medium"
+        >
+          {`${name} ${(percent * 100).toFixed(0)}%`} 
+        </text>
+      );
+    };
+
   return (
-    <div className="bg-white/5 p-6 rounded-xl shadow-lg w-full max-w-md mx-auto">
-      <h2 className="text-2xl font-bold mb-4 text-center text-white">
-        Generos mas escuchados
+    <div className="bg-white/5 p-6 rounded-2xl shadow-lg w-full h-full flex flex-col">
+      <h2 className="text-xl font-bold mb-4 text-white text-center">
+        Distribución de Géneros
       </h2>
 
       {genres.length > 0 ? (
-        <div className="h-[300px] w-full flex justify-center items-center">
+        <div className="flex-grow min-h-[300px] w-full">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
               <Pie
-                data={genres}
-                cx="50%" // Centro X
-                cy="50%" // Centro Y
-                labelLine={false} // Quitamos las líneas para que sea más limpio
+                data={genres as any} // Aseguramos el tipo correcto
+                cx="50%"
+                cy="50%"
+                labelLine={true} // Línea conectora
+                label={renderCustomizedLabel} // Usamos nuestra función de etiqueta
                 outerRadius={100} // Tamaño del círculo
-                innerRadius={40} // Si pones esto > 0 se vuelve una "Dona" (Donut Chart)
                 fill="#8884d8"
                 dataKey="count"
                 nameKey="name"
-                paddingAngle={5} // Espacio entre rebanadas
+                paddingAngle={2} // Pequeño espacio entre rebanadas
               >
+                {}
                 {genres.map((_, index) => (
-                  <Cell
-                    key={`cell-${index}`}
-                    fill={COLORS[index % COLORS.length]}
-                    stroke="none" // Quita el borde blanco feo
+                  <Cell 
+                    key={`cell-${index}`} 
+                    fill={COLORS[index % COLORS.length]} 
+                    stroke="rgba(0,0,0,0.2)" // Borde sutil para separar
                   />
                 ))}
               </Pie>
               <Tooltip 
-                contentStyle={{ backgroundColor: "#333", border: "none", borderRadius: "8px", color: "#fff" }}
-                itemStyle={{ color: "#fff" }}
-              />
-              <Legend 
-                layout="horizontal" 
-                verticalAlign="bottom" 
-                align="center"
-                wrapperStyle={{ fontSize: "12px", paddingTop: "10px" }}
+                formatter={(value: number, name: string, props: any) => [
+                  `${value} artistas (${props.payload.percent}%)`, 
+                  name
+                ]}
+                contentStyle={{ backgroundColor: '#1f2937', border: 'none', borderRadius: '8px', color: 'white' }}
               />
             </PieChart>
           </ResponsiveContainer>
         </div>
       ) : (
-        <p className="text-center text-gray-400">Cargando datos...</p>
+        <div className="flex-grow flex items-center justify-center text-gray-400">
+          Cargando datos...
+        </div>
       )}
     </div>
   );

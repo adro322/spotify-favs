@@ -50,7 +50,7 @@ export default function GenreChart({
         const sorted = Object.entries(counts)
           .map(([name, count]) => ({ name, count }))
           .sort((a, b) => b.count - a.count)
-          .slice(0, 10); // Top 10
+          .slice(0, 6); // Top 10
 
         setGenres(sorted);
       })
@@ -64,7 +64,6 @@ export default function GenreChart({
       </h2>
 
       {genres.length > 0 ? (
-        // Contenedor responsivo para que se adapte al tamaño
         <div className="h-[300px] w-full flex justify-center items-center">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
@@ -74,7 +73,7 @@ export default function GenreChart({
                 cy="50%" // Centro Y
                 labelLine={false} // Quitamos las líneas para que sea más limpio
                 outerRadius={100} // Tamaño del círculo
-                innerRadius={60} // Si pones esto > 0 se vuelve una "Dona" (Donut Chart)
+                innerRadius={40} // Si pones esto > 0 se vuelve una "Dona" (Donut Chart)
                 fill="#8884d8"
                 dataKey="count"
                 nameKey="name"

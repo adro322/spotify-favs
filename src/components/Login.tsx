@@ -11,7 +11,7 @@ export default function Login({
 
   const loginUrl = `https://accounts.spotify.com/authorize?client_id=${clientId}&response_type=code&redirect_uri=${encodeURIComponent(
     redirectUri
-  )}&scope=user-top-read`;
+)}&scope=user-top-read&show_dialog=true`;
 
   // Cuando Spotify redirige con ?code=...
   useEffect(() => {

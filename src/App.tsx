@@ -36,25 +36,27 @@ function App() {
         <Login onToken={(t) => setAccessToken(t)} />
       ) : (
         <>
-        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <main className="max-w-6xl mx-auto px-6 py-8">
           {/* TIME RANGE BUTTONS */}
-          <div className="flex gap-2 mb-8">
+          <div className="flex justify-center mb-8">
             <TimeRangeSelector
               timeRange={timeRange}
               setTimeRange={setTimeRange}
             />
 
             {/* DASHBOARD */}
-            <div className="mb-8">
-            <GenreChart accessToken={accessToken} timeRange={timeRange} />
-            </div>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-              <TopArtists accessToken={accessToken} timeRange={timeRange} />
-              <TopTracks accessToken={accessToken} timeRange={timeRange} />
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="lg:col-span-2 h-[400px]">
+              <GenreChart accessToken={accessToken} timeRange={timeRange} />
+              </div>
+              <div className="w-full">
+                <TopArtists accessToken={accessToken} timeRange={timeRange} />
+                <TopTracks accessToken={accessToken} timeRange={timeRange} />
+              </div>
             </div>
             
           </div>
-          </main>
+        </main>
         </>
       )}
     </div>

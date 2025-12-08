@@ -13,12 +13,13 @@
     "@fortawesome/fontawesome-svg-core": "^7.1.0",
     "@fortawesome/free-brands-svg-icons": "^7.1.0",
     "@fortawesome/react-fontawesome": "^3.1.0",
+    "@syncfusion/ej2-react-charts": "^31.2.16",
     "@tailwindcss/vite": "^4.1.17",
     "axios": "^1.13.2",
     "framer-motion": "^12.23.24",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
-    "recharts": "^3.4.1",
+    "recharts": "^3.5.1",
     "tailwindcss": "^4.1.17"
   },
   "devDependencies": {
@@ -33,6 +34,7 @@
     "globals": "^16.4.0",
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.45.0",
-    "vite": "^7.1.7"
+    "vite": "^7.1.7",
+    "vite-plugin-mkcert": "^1.17.9"
   }
 }

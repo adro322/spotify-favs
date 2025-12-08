@@ -71,14 +71,14 @@ export default function GenreChart({
   }, [accessToken, timeRange]);
 
   return (
-    <div className="bg-zinc-900 rounded-xl p-6 border border-zinc-800">
+    <div className="bg-white/5 p-6 rounded-2xl shadow-lg w-full h-full flex flex-col">
       <h2 className="text-2xl font-bold mb-4 text-left text-white">
         Géneros Favoritos
       </h2>
 
       {genres.length > 0 ? (
         <div className="h-[400px] w-full flex justify-center items-center">
-          <ResponsiveContainer width="100%" height={300}>
+          <ResponsiveContainer width="100%" height="100%">
             <PieChart>
               <Pie
                 data={genres}
@@ -100,7 +100,7 @@ export default function GenreChart({
                 ))}
               </Pie>
               <Tooltip 
-                contentStyle={{ backgroundColor: "#333", border: "1px solid #27272a", borderRadius: "8px", color: "#fff" }}
+                contentStyle={{ backgroundColor: "#333", border: "none", borderRadius: "8px", color: "#fff" }}
                 itemStyle={{ color: "#fff" }}
               />
               <Legend 

@@ -12,7 +12,7 @@ function App() {
   >("short_term");
 
   return (
-    <div className="min-h-screen bg-gray-950 text-white">
+    <div className="min-h-screen bg-gray-950 text-white pb-12">
 
       {/* HEADER */}
       <header className="w-full py-5 px-10 bg-black/40 backdrop-blur-md border-b border-white/10 flex justify-between items-center">
@@ -36,23 +36,25 @@ function App() {
         <Login onToken={(t) => setAccessToken(t)} />
       ) : (
         <>
+        <main className="max-w-7xl mx-auto px-6 md:px-8 py-8 space-y-8">
           {/* TIME RANGE BUTTONS */}
-          <div className="p-10">
+          <div className="flex justify-center">
             <TimeRangeSelector
               timeRange={timeRange}
               setTimeRange={setTimeRange}
             />
 
             {/* DASHBOARD */}
-            <div className="mb-12">
+            <section className="w-full lg:h-[500px]">
             <GenreChart accessToken={accessToken} timeRange={timeRange} />
-            </div>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            </section>
+            <section className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               <TopArtists accessToken={accessToken} timeRange={timeRange} />
               <TopTracks accessToken={accessToken} timeRange={timeRange} />
-            </div>
+            </section>
             
           </div>
+          </main>
         </>
       )}
     </div>

@@ -9,6 +9,8 @@ export default function Login({
   const clientId = import.meta.env.VITE_SPOTIFY_CLIENT_ID;
   const redirectUri = import.meta.env.VITE_REDIRECT_URI;
 
+  console.log("URI enviada:", redirectUri); // <--- AGREGA ESTO PARA VERLO EN CONSOLA
+  
   const loginUrl = `https://accounts.spotify.com/authorize?client_id=${clientId}&response_type=code&redirect_uri=${encodeURIComponent(
     redirectUri
 )}&scope=user-top-read&show_dialog=true`;

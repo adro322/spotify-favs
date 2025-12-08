@@ -1,16 +1,13 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
-
-interface GenreData {
-  name: string;
-  count: number;
-}
-
-const COLORS = [
-  "#1DB954", "#191414", "#535353", "#B3B3B3", "#FF0055",
-  "#0077FF", "#FFAA00", "#8800CC", "#00CCCC", "#FF5500",
-];
+import {
+  PieChart,
+  Pie,
+  Cell,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from "recharts";
 
 export default function GenreChart({
   accessToken,
@@ -19,20 +16,36 @@ export default function GenreChart({
   accessToken: string;
   timeRange: "short_term" | "medium_term" | "long_term";
 }) {
-  const [genres, setGenres] = useState<GenreData[]>([]);
+  const [genres, setGenres] = useState<{ name: string; count: number }[]>([]);
+
+  
+  // Paleta de colores para el gráfico (puedes cambiarlos a tu gusto)
+  const COLORS = [
+    "#1DB954", // Spotify Green
+    "#191414", // Black
+    "#535353", // Grey
+    "#B3B3B3", // Light Grey
+    "#FF0055", // Accent Red (contrast)
+    "#0077FF", // Accent Blue
+    "#FFAA00", // Accent Orange
+    "#8800CC", // Accent Purple
+    "#00CCCC", // Cyan
+    "#FF5500", // Dark Orange
+  ];
 
   useEffect(() => {
     if (!accessToken) return;
 
-    // URL oficial correcta para obtener tus artistas top
-    const ENDPOINT = "https://api.spotify.com/v1/me/top/artists";
-
     axios
-      .get(`${ENDPOINT}?time_range=${timeRange}&limit=50`, {
-        headers: { Authorization: `Bearer ${accessToken}` },
-      })
+      .get(
+        `https://api.spotify.com/v1/me/top/artists?limit=20&time_range=$${timeRange}`,
+        {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        }
+      )
       .then((res) => {
         const allGenres: string[] = [];
+
         res.data.items.forEach((artist: any) => {
           allGenres.push(...artist.genres);
         });
@@ -41,68 +54,69 @@ export default function GenreChart({
         allGenres.forEach((g) => {
           counts[g] = (counts[g] || 0) + 1;
         });
+        const entries = Object.entries(counts).map(([name, count]) => ({ name, count }));
+        const total = entries.reduce((sum, item) => sum + item.count, 0);
 
-        // Convertimos y ordenamos (ya no necesitamos calcular el porcentaje manual aquí)
-        const sorted = Object.entries(counts)
-          .map(([name, count]) => ({ name, count }))
+        const sorted = entries
+          .map((item) => ({
+            ...item,
+            percentage: ((item.count / total) * 100).toFixed(1),
+          }))
           .sort((a, b) => b.count - a.count)
-          .slice(0, 8); // Top 8
+          .slice(0, 5);
 
         setGenres(sorted);
+
+
       })
       .catch((err) => console.error("Error genres:", err));
   }, [accessToken, timeRange]);
 
   return (
-    <div className="bg-white/5 p-6 rounded-2xl shadow-lg w-full h-full flex flex-col">
-      <h2 className="text-xl font-bold mb-4 text-white text-center">
-        Distribución de Géneros
+    <div className="bg-white/5 p-6 rounded-xl shadow-lg w-full max-w-md mx-auto">
+      <h2 className="text-2xl font-bold mb-4 text-center text-white">
+        Géneros Favoritos
       </h2>
 
       {genres.length > 0 ? (
-        <div className="flex-grow min-h-[300px] w-full">
+        // Contenedor responsivo para que se adapte al tamaño
+        <div className="h-[300px] w-full flex justify-center items-center">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
               <Pie
-                data={genres as any}
+                data={genres}
                 cx="50%"
                 cy="50%"
+                label={(props) => `${props.name}: ${props.payload.percentage}%`}
                 labelLine={false}
                 outerRadius={100}
-                fill="#8884d8"
+                innerRadius={0}
                 dataKey="count"
-                // AQUÍ ESTÁ LA CORRECCIÓN CLAVE (: any)
-                label={({ name, percent }: any) => 
-                  `${name} ${(percent * 100).toFixed(0)}%`
-                }
+                nameKey="name"
               >
                 {genres.map((_, index) => (
                   <Cell
                     key={`cell-${index}`}
                     fill={COLORS[index % COLORS.length]}
-                    stroke="rgba(0,0,0,0.2)"
+                    stroke="none" // Quita el borde blanco feo
                   />
                 ))}
               </Pie>
-              <Tooltip
-                contentStyle={{
-                  backgroundColor: "#18181b",
-                  border: "1px solid #27272a",
-                  borderRadius: "8px",
-                  color: "#fff",
-                }}
-                formatter={(value: number, name: string) => [
-                  `${value} artistas`, 
-                  name
-                ]}
+              <Tooltip 
+                contentStyle={{ backgroundColor: "#333", border: "none", borderRadius: "8px", color: "#fff" }}
+                itemStyle={{ color: "#fff" }}
+              />
+              <Legend 
+                layout="horizontal" 
+                verticalAlign="bottom" 
+                align="center"
+                wrapperStyle={{ fontSize: "12px", paddingTop: "10px" }}
               />
             </PieChart>
           </ResponsiveContainer>
         </div>
       ) : (
-        <div className="flex-grow flex items-center justify-center text-gray-400">
-          Cargando datos...
-        </div>
+        <p className="text-center text-gray-400">Cargando datos...</p>
       )}
     </div>
   );

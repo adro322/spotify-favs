@@ -28,7 +28,7 @@ export default function TopArtists({ accessToken, timeRange }: { accessToken: st
 
   return (
     <div className="mt-6">
-      <h2 className="text-2xl font-bold mb-4">🌟 Top Artists</h2>
+      <h2 className="text-2xl font-bold mb-4">Top Artists</h2>
 
       <div className="flex flex-col gap-4">
         {visibleArtists.map((a, i) => (

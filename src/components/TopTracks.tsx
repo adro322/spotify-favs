@@ -30,7 +30,7 @@ export default function TopTracks({ accessToken, timeRange }: { accessToken: str
 
   return (
     <div className="mt-6">
-      <h2 className="text-2xl font-bold mb-4">🎵 Top Tracks</h2>
+      <h2 className="text-2xl font-bold mb-4">Top Tracks</h2>
       <div className="flex flex-col gap-4">
         {visibleTracks.map((t, i) => (
           <div key={t.id} className="flex items-center gap-4 p-3 bg-gray-800/40 rounded-xl hover:bg-gray-800 transition">

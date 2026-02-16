@@ -4,6 +4,7 @@ import TopArtists from "./components/TopArtists";
 import TopTracks from "./components/TopTracks";
 import GenreChart from "./components/GenreChart";
 import TimeRangeSelector from "./components/TimeRangeSelector";
+import Header from "./components/Header";
 
 function App() {
   const [accessToken, setAccessToken] = useState<string | null>(null);
@@ -11,25 +12,15 @@ function App() {
     "short_term" | "medium_term" | "long_term"
   >("short_term");
 
+// Creamos la función de cerrar sesión aquí, donde vive el estado
+  const handleLogout = () => {
+    setAccessToken(null);
+    window.location.href = "/";
+  };
   return (
     <div className="min-h-screen bg-black text-white">
 
-      {/* HEADER */}
-      <header className="w-full py-5 px-10 bg-black/40 backdrop-blur-md border-b border-white/10 flex justify-between items-center">
-        <h1 className="text-2xl font-bold tracking-wide">SpotiStats</h1>
-
-        {accessToken && (
-          <button
-            onClick={() => {
-              setAccessToken(null);
-              window.location.href = "/";
-            }}
-            className="px-4 py-2 bg-red-500 rounded-lg hover:bg-red-600 transition"
-          >
-            Cerrar sesión
-          </button>
-        )}
-      </header>
+    <Header accessToken={accessToken} onLogout={handleLogout} />
 
       {/* LOGIN */}
       {!accessToken ? (

@@ -13,12 +13,12 @@ export default function Dashboard({ accessToken }: DashboardProps) {
 
   return (
     <main className="max-w-7xl mx-auto px-6 py-8">
-      <div className="flex justify-left mb-8">
+      <div className="flex justify-left mb-2">
         <TimeRangeSelector timeRange={timeRange} setTimeRange={setTimeRange} />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <section className="md:col-span-2 h-[400px]">
+        <section className="md:col-span-2 h-[500px] pb-4">
           <GenreChart accessToken={accessToken} timeRange={timeRange} />
         </section>
         <section className="w-full">

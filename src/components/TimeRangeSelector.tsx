@@ -18,7 +18,7 @@ export default function TimeRangeSelector({
 
       <button
         onClick={() => setTimeRange("medium_term")}
-        className={`px-4 py-2 rounded-lg ${
+        className={`px-4 py-2 rounded-lg hover:bg-gray-600 ${
           timeRange === "medium_term" ? "bg-green-500" : "bg-gray-700"
         }`}
       >

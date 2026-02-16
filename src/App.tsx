@@ -19,7 +19,6 @@ function App() {
       {!accessToken ? (
         <Login onToken={(t) => setAccessToken(t)} />
       ) : (
-        // Solo le pasamos el token al Dashboard, ¡él se encarga del resto!
         <Dashboard accessToken={accessToken} /> 
       )}
     </div>

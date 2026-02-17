@@ -22,7 +22,7 @@ export default function Dashboard({ accessToken }: DashboardProps) {
         <NowPlaying accessToken={accessToken} />
       </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <section className="md:col-span-2 h-[500px]">
+          <section className="md:col-span-2 h-[400px]">
             <GenreChart accessToken={accessToken} timeRange={timeRange} />
           </section>
           <section className="w-full">

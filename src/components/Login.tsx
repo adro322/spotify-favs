@@ -16,9 +16,8 @@ export default function Login({
     "user-read-recently-played",    // Para tu historial (Recently Played)
     "playlist-modify-public",       // Para crear la playlist de recomendaciones
     "playlist-modify-private"
-  ].join("%20"); // %20 es un espacio en código URL
+  ].join("%20"); 
 
-  // Corregí el ${clientId} y agregué la variable de SCOPES
   const loginUrl = `https://accounts.spotify.com/authorize?client_id=${clientId}&response_type=code&redirect_uri=${encodeURIComponent(
     redirectUri
   )}&scope=${SCOPES}&show_dialog=true`;
@@ -61,45 +60,3 @@ export default function Login({
     </div>
   );
 }
- /*const loginUrl = `https://accounts.spotify.com/authorize?client_id=${clientId}&response_type=code&redirect_uri=${encodeURIComponent(
-    redirectUri
-  )}&scope=user-top-read&show_dialog=true`;
-
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const code = params.get("code");
-
-    if (!code) return;
-
-    fetch("/api/callback", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ code, redirect_uri: redirectUri }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        onToken(data.access_token);
-        window.history.replaceState({}, document.title, "/");
-      })
-      .catch((err) => console.error("Error callback:", err));
-  }, []);
-
-  return (
-    <div className="flex flex-col items-center justify-center h-[80vh] text-center px-6">
-      <h2 className="text-4xl font-bold mb-6">
-        Bienvenido a <span className="text-green-400">Spotify Favs</span>
-      </h2>
-
-      <p className="text-lg text-gray-300 mb-8 max-w-xl">
-        Conecta tu cuenta de Spotify para ver tus estadísticas personalizadas.
-      </p>
-
-      <a
-        href={loginUrl}
-        className="px-8 py-3 bg-green-500 text-lg rounded-xl hover:bg-green-600 transition shadow-lg"
-      >
-        Iniciar sesión con Spotify
-      </a>
-    </div>
-  );
-}*/

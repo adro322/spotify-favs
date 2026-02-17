@@ -9,7 +9,7 @@ export default function TimeRangeSelector({
     <div className="flex gap-4 mb-8">
       <button
         onClick={() => setTimeRange("short_term")}
-        className={`px-4 py-2 rounded-lg ${
+        className={`px-4 py-2 rounded-lg hover:bg-gray-600 ${
           timeRange === "short_term" ? "bg-green-500" : "bg-gray-700"
         }`}
       >
@@ -27,7 +27,7 @@ export default function TimeRangeSelector({
 
       <button
         onClick={() => setTimeRange("long_term")}
-        className={`px-4 py-2 rounded-lg ${
+        className={`px-4 py-2 rounded-lg hover:bg-gray-600 ${
           timeRange === "long_term" ? "bg-green-500" : "bg-gray-700"
         }`}
       >

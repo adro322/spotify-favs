@@ -52,7 +52,6 @@ export default function NowPlaying({ accessToken }: { accessToken: string }) {
 
   // EFECTO 2: La "Magia" local -> Sumar 1 segundo a la barra fluidamente
   useEffect(() => {
-    // CORRECCIÓN PARA TYPESCRIPT AQUÍ:
     let localTimer: ReturnType<typeof setInterval>;
 
     if (currentTrack?.isPlaying) {
@@ -68,8 +67,15 @@ export default function NowPlaying({ accessToken }: { accessToken: string }) {
     return () => clearInterval(localTimer);
   }, [currentTrack?.isPlaying]);
 
-  if (!currentTrack) {
-    return null;
+ if (!currentTrack) {
+    return (
+      // Usamos el MISMO color y bordes que tu GenreChart
+      <div className="bg-gray-800/40 p-6 rounded-2xl shadow-lg w-full min-h-[140px] flex flex-col items-center justify-center">
+        <Music2 className="w-8 h-8 text-gray-500 mb-2" />
+        <h3 className="text-gray-400 font-medium text-lg">No hay nada reproduciéndose</h3>
+        <p className="text-gray-500 text-sm">Abre Spotify y dale play a una canción para verla aquí</p>
+      </div>
+    );
   }
 
   const progressPercent = (currentTrack.progress / currentTrack.duration) * 100;
@@ -82,7 +88,7 @@ export default function NowPlaying({ accessToken }: { accessToken: string }) {
   };
 
   return (
-    <div className="bg-white/5 p-6 rounded-2xl shadow-lg w-full border border-white/10">
+    <div className="bg-gray-800/40 p-6 rounded-2xl shadow-lg w-full">
       <div className="flex items-center gap-2 mb-4">
         <div className="relative">
           {currentTrack.isPlaying ? (

@@ -18,10 +18,8 @@ export default function Dashboard({ accessToken }: DashboardProps) {
         <TimeRangeSelector timeRange={timeRange} setTimeRange={setTimeRange} />
       </div>
 
-      <div className="flex justify-center mb-8">
-        <div className="w-full max-w-2xl">
-          <NowPlaying accessToken={accessToken} />
-        </div>
+      <div className="w-full mb-8">
+        <NowPlaying accessToken={accessToken} />
       </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <section className="md:col-span-2 h-[500px] pb-4">

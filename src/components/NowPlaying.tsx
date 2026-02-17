@@ -82,7 +82,7 @@ export default function NowPlaying({ accessToken }: { accessToken: string }) {
   };
 
   return (
-    <div className="bg-zinc-900 rounded-lg p-6 border border-zinc-800 shadow-xl">
+    <div className="bg-white/5 p-6 rounded-2xl shadow-lg w-full border border-white/10">
       <div className="flex items-center gap-2 mb-4">
         <div className="relative">
           {currentTrack.isPlaying ? (

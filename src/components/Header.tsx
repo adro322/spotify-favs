@@ -12,7 +12,7 @@ export default function Header({ accessToken, onLogout }: HeaderProps) {
       {accessToken && (
         <button
           onClick={onLogout}
-          className="px-4 py-2 bg-red-500 rounded-lg hover:bg-red-600 transition text-sm font-medium text-white"
+          className="px-4 py-2 bg-white/20 rounded-lg hover:bg-white/30 transition text-sm font-medium text-black"
         >
           Cerrar sesión
         </button>

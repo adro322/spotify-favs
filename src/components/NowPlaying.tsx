@@ -1,106 +1,139 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
+import { useEffect, useState } from 'react';
+import { Music2, Pause } from 'lucide-react';
+import axios from 'axios';
+
+interface CurrentTrack {
+  name: string;
+  artist: string;
+  album: string;
+  albumArt: string;
+  progress: number;
+  duration: number;
+  isPlaying: boolean;
+}
 
 export default function NowPlaying({ accessToken }: { accessToken: string }) {
-  const [nowPlaying, setNowPlaying] = useState<any>(null);
+  const [currentTrack, setCurrentTrack] = useState<CurrentTrack | null>(null);
 
+  // EFECTO 1: Consultar a Spotify
   useEffect(() => {
     if (!accessToken) return;
 
-    const fetchNowPlaying = () => {
-      // Endpoint oficial para lo que estás escuchando
-      axios
-        .get("https://api.spotify.com/v1/me/player/currently-playing", {
+    const fetchNowPlaying = async () => {
+      try {
+        // AQUÍ ESTÁ LA URL OFICIAL Y CORRECTA DE SPOTIFY
+        const res = await axios.get("https://api.spotify.com/v1/me/player/currently-playing", {
           headers: { Authorization: `Bearer ${accessToken}` },
-        })
-        .then((res) => {
-          // Spotify devuelve 200 si hay música, 204 si no hay nada sonando
-          if (res.status === 200 && res.data && res.data.item) {
-            setNowPlaying(res.data);
-          } else {
-            setNowPlaying(null);
-          }
-        })
-        .catch((err) => console.error("Error Now Playing:", err));
+        });
+
+        // Si Spotify devuelve 200 y hay una canción
+        if (res.status === 200 && res.data?.item) {
+          setCurrentTrack({
+            name: res.data.item.name,
+            artist: res.data.item.artists.map((a: any) => a.name).join(', '),
+            album: res.data.item.album.name,
+            albumArt: res.data.item.album.images[0]?.url || '',
+            progress: res.data.progress_ms || 0,
+            duration: res.data.item.duration_ms,
+            isPlaying: res.data.is_playing,
+          });
+        } else {
+          setCurrentTrack(null);
+        }
+      } catch (error) {
+        console.error('Error fetching currently playing:', error);
+      }
     };
 
-    // Buscamos inmediatamente al cargar
     fetchNowPlaying();
-    
-    // Y luego buscamos cada 10 segundos para actualizar la barra de progreso
-    const interval = setInterval(fetchNowPlaying, 10000);
+    const interval = setInterval(fetchNowPlaying, 10000); // Consulta real cada 10s
     return () => clearInterval(interval);
   }, [accessToken]);
 
-  // Si no está escuchando nada, mostramos un diseño "apagado"
-  if (!nowPlaying) {
-    return (
-      <div className="bg-white/5 p-6 rounded-2xl border border-white/10 flex flex-col items-center justify-center text-gray-400 h-[120px] w-full">
-        <span className="text-sm font-medium">No estás escuchando nada ahora mismo</span>
-      </div>
-    );
+  // EFECTO 2: La "Magia" local -> Sumar 1 segundo a la barra fluidamente
+  useEffect(() => {
+    // CORRECCIÓN PARA TYPESCRIPT AQUÍ:
+    let localTimer: ReturnType<typeof setInterval>;
+
+    if (currentTrack?.isPlaying) {
+      localTimer = setInterval(() => {
+        setCurrentTrack((prev) => {
+          if (!prev) return prev;
+          const newProgress = Math.min(prev.progress + 1000, prev.duration);
+          return { ...prev, progress: newProgress };
+        });
+      }, 1000);
+    }
+
+    return () => clearInterval(localTimer);
+  }, [currentTrack?.isPlaying]);
+
+  if (!currentTrack) {
+    return null;
   }
 
-  const { item, progress_ms, is_playing } = nowPlaying;
-  
-  // Calculamos el porcentaje para la barra verde
-  const progressPercent = (progress_ms / item.duration_ms) * 100;
+  const progressPercent = (currentTrack.progress / currentTrack.duration) * 100;
 
-  // Función para formatear milisegundos a "Minutos:Segundos" (ej: 3:20)
   const formatTime = (ms: number) => {
-    const minutes = Math.floor(ms / 60000);
-    const seconds = ((ms % 60000) / 1000).toFixed(0);
-    return `${minutes}:${Number(seconds) < 10 ? "0" : ""}${seconds}`;
+    const totalSeconds = Math.floor(ms / 1000);
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
   };
 
   return (
-    <div className="bg-[#121212] p-5 rounded-2xl border border-white/10 w-full shadow-xl">
-      {/* Título y estado */}
+    <div className="bg-zinc-900 rounded-lg p-6 border border-zinc-800 shadow-xl">
       <div className="flex items-center gap-2 mb-4">
-        {/* Ícono animado verde (solo visible si está en Play) */}
-        <div className={`flex items-end gap-[2px] h-4 ${!is_playing && 'opacity-50'}`}>
-          <div className="w-1 bg-green-500 animate-[bounce_1s_infinite] h-2"></div>
-          <div className="w-1 bg-green-500 animate-[bounce_1.2s_infinite] h-4"></div>
-          <div className="w-1 bg-green-500 animate-[bounce_0.8s_infinite] h-3"></div>
+        <div className="relative">
+          {currentTrack.isPlaying ? (
+            <div className="flex items-center gap-1">
+              <Music2 className="w-5 h-5 text-green-500" />
+              <div className="flex gap-[2px] items-end h-4">
+                <div className="w-[3px] bg-green-500 rounded-full animate-[bounce_0.6s_ease-in-out_infinite]" style={{ height: '40%' }} />
+                <div className="w-[3px] bg-green-500 rounded-full animate-[bounce_0.6s_ease-in-out_infinite_0.1s]" style={{ height: '80%' }} />
+                <div className="w-[3px] bg-green-500 rounded-full animate-[bounce_0.6s_ease-in-out_infinite_0.2s]" style={{ height: '60%' }} />
+              </div>
+            </div>
+          ) : (
+            <Pause className="w-5 h-5 text-zinc-400" />
+          )}
         </div>
-        <h3 className="text-green-500 font-bold text-sm tracking-wider uppercase">
-          {is_playing ? "Now Playing" : "Paused"}
-        </h3>
+        <h2 className="text-xl font-semibold text-white">
+          {currentTrack.isPlaying ? 'Now Playing' : 'Paused'}
+        </h2>
       </div>
 
       <div className="flex items-center gap-4">
-        {/* Portada del Álbum */}
-        <img
-          src={item.album.images[0]?.url}
-          alt={item.name}
-          className="w-16 h-16 rounded-md shadow-lg object-cover"
-        />
+        <div className="relative w-24 h-24 flex-shrink-0">
+          <img
+            src={currentTrack.albumArt}
+            alt={currentTrack.album}
+            className="w-full h-full object-cover rounded-md shadow-lg"
+          />
+          {currentTrack.isPlaying && (
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent rounded-md" />
+          )}
+        </div>
 
-        {/* Info de la Canción y Barra de progreso */}
-        <div className="flex-1">
-          <h4 className="text-white font-bold text-lg truncate">{item.name}</h4>
-          <p className="text-gray-400 text-sm truncate">
-            {item.artists.map((a: any) => a.name).join(", ")}
+        <div className="flex-1 min-w-0">
+          <h3 className="text-lg font-semibold text-white truncate mb-1">
+            {currentTrack.name}
+          </h3>
+          <p className="text-sm text-zinc-400 truncate mb-3">
+            {currentTrack.artist}
           </p>
 
-          {/* Contenedor de la barra de progreso */}
-          <div className="mt-3 flex items-center gap-3">
-            <span className="text-xs text-gray-400 w-8 text-right">
-              {formatTime(progress_ms)}
-            </span>
-            
-            {/* La barra de fondo gris */}
-            <div className="flex-1 h-1.5 bg-gray-700 rounded-full overflow-hidden">
-              {/* La barra verde que avanza */}
+          <div className="space-y-1">
+            <div className="w-full bg-zinc-800 rounded-full h-1.5 overflow-hidden">
               <div
-                className="h-full bg-green-500 rounded-full transition-all duration-1000 ease-linear"
+                className="bg-green-500 h-full rounded-full transition-all duration-1000 ease-linear"
                 style={{ width: `${progressPercent}%` }}
-              ></div>
+              />
             </div>
-
-            <span className="text-xs text-gray-400 w-8">
-              {formatTime(item.duration_ms)}
-            </span>
+            <div className="flex justify-between text-xs text-zinc-500 font-medium tracking-wide">
+              <span>{formatTime(currentTrack.progress)}</span>
+              <span>{formatTime(currentTrack.duration)}</span>
+            </div>
           </div>
         </div>
       </div>

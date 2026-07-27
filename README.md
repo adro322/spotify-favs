@@ -1,73 +1,24 @@
-# React + TypeScript + Vite
+# 🎵 Spotify Favs - Music Analytics Dashboard
+Dashboard interactivo de análisis musical que consume la API de Spotify para procesar y visualizar estadísticas de reproducción, incluyendo canciones principales, artistas favoritos y géneros musicales por períodos de tiempo.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+🌐 **Enlace del proyecto:** [spotify-favs-iota.vercel.app](https://spotify-favs-iota.vercel.app/)
 
-Currently, two official plugins are available:
+## ⚠️ Nota Importante sobre la API de Spotify (Modo Desarrollo)
+Debido a las políticas actuales y restricciones de cuota de la Spotify Developer API, esta aplicación se encuentra operando bajo el Modo de Desarrollo (Development Mode). Esto implica dos condiciones técnicas importantes impuestas por Spotify:
+* Requisito de Cuenta Premium: Debido a los endpoints utilizados para consultar el historial de reproducción y las preferencias del usuario en tiempo real, es estrictamente necesario contar con una cuenta de Spotify Premium para iniciar sesión y visualizar las estadísticas.
+* Límite de Colaboradores / Usuarios: Por restricciones de la plataforma de desarrolladores de Spotify, solo se permite un máximo de 5 usuarios registrados en la lista de acceso (WhiteList) de la aplicación para poder autenticarse. Si deseas probarlo y el acceso está restringido, puedes contactarme directamente para añadir tu correo al panel de desarrolladores.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## ✨ Características Principales
+📊 Visualización de Datos: Gráficos interactivos construidos con Recharts para desglosar géneros musicales y tendencias de escucha.
 
-## React Compiler
+🎧 Top Tracks & Artists: Consulta tus canciones y artistas más escuchados en diferentes rangos de tiempo.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+🔐 Autenticación Segura: Conexión mediante OAuth 2.0 directamente con el servicio de cuentas de Spotify.
 
-## Expanding the ESLint configuration
+🎨 Interfaz Moderna: Diseño responsive con modo oscuro optimizado utilizando Tailwind CSS.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## 🛠️ Stack Tecnológico
+* **Frontend:** React.js, Vite, Tailwind CSS.
+* **Librerías de Gráficos:** Recharts, Lucide React.
+* **APIs & Consumo:** Spotify Web API, Axios.
+* **Despliegue:** Vercel.
